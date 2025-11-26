@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, Chrome } from 'lucide-react'
+import { signInWithEmail, signInWithGoogle } from '@/lib/firebase-helpers'
+import toast from 'react-hot-toast'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -13,33 +15,56 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  const handleGoogleLogin = async () => {
+    setLoading(true)
+    setError('')
+    
+    try {
+      // Sign in with Firebase Google
+      const firebaseUser = await signInWithGoogle()
+      
+      if (firebaseUser) {
+        toast.success('Logged in with Google!')
+        router.push('/')
+        router.refresh()
+      }
+    } catch (error: any) {
+      console.error('Google login error:', error)
+      setError(error.message || 'Google sign-in failed')
+      toast.error(error.message || 'Google sign-in failed')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
     try {
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError('Invalid email or password')
-      } else {
+      // Sign in with Firebase
+      const firebaseUser = await signInWithEmail(email, password)
+      
+      if (firebaseUser) {
+        // Also sign in with NextAuth for session management
+        await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        })
+        
+        toast.success('Logged in successfully!')
         router.push('/')
         router.refresh()
       }
-    } catch (error) {
-      setError('An error occurred. Please try again.')
+    } catch (error: any) {
+      console.error('Login error:', error)
+      setError(error.message || 'Invalid email or password')
+      toast.error(error.message || 'Login failed')
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleGoogleLogin = () => {
-    signIn('google', { callbackUrl: '/' })
   }
 
   return (
@@ -58,7 +83,8 @@ export default function LoginPage() {
           {/* Google Login */}
           <button
             onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Chrome className="w-5 h-5" />
             Continue with Google
@@ -94,7 +120,7 @@ export default function LoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none"
-                  placeholder="demo@example.com"
+                  placeholder="you@example.com"
                 />
               </div>
             </div>
@@ -112,7 +138,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-transparent outline-none"
-                  placeholder="password"
+                  placeholder="Enter your password"
                 />
               </div>
             </div>
@@ -131,13 +157,6 @@ export default function LoginPage() {
             <Link href="/register" className="text-black font-medium hover:underline">
               Sign up
             </Link>
-          </div>
-
-          {/* Demo Credentials */}
-          <div className="bg-gray-50 p-4 rounded-lg text-sm">
-            <p className="font-medium text-gray-700 mb-2">Demo Credentials:</p>
-            <p className="text-gray-600">Email: demo@example.com</p>
-            <p className="text-gray-600">Password: password</p>
           </div>
         </div>
       </div>

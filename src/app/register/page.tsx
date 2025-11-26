@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Mail, Lock, User, Chrome } from 'lucide-react'
+import { signUpWithEmail, signInWithGoogle } from '@/lib/firebase-helpers'
+import toast from 'react-hot-toast'
 
 export default function RegisterPage() {
   const router = useRouter()
@@ -14,6 +16,28 @@ export default function RegisterPage() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
+  const handleGoogleSignup = async () => {
+    setLoading(true)
+    setError('')
+    
+    try {
+      // Sign up with Firebase Google
+      const firebaseUser = await signInWithGoogle()
+      
+      if (firebaseUser) {
+        toast.success('Signed up with Google!')
+        router.push('/')
+        router.refresh()
+      }
+    } catch (error: any) {
+      console.error('Google signup error:', error)
+      setError(error.message || 'Google sign-up failed')
+      toast.error(error.message || 'Google sign-up failed')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,29 +57,28 @@ export default function RegisterPage() {
     }
 
     try {
-      // In a real app, you'd call your registration API here
-      // For demo, we'll just sign in with credentials
-      const result = await signIn('credentials', {
-        email,
-        password,
-        redirect: false,
-      })
-
-      if (result?.error) {
-        setError('Registration failed. Please try again.')
-      } else {
+      // Register with Firebase
+      const firebaseUser = await signUpWithEmail(email, password, name)
+      
+      if (firebaseUser) {
+        // Also sign in with NextAuth for session management
+        await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        })
+        
+        toast.success('Account created successfully!')
         router.push('/')
         router.refresh()
       }
-    } catch (error) {
-      setError('An error occurred. Please try again.')
+    } catch (error: any) {
+      console.error('Registration error:', error)
+      setError(error.message || 'Registration failed. Please try again.')
+      toast.error(error.message || 'Registration failed')
     } finally {
       setLoading(false)
     }
-  }
-
-  const handleGoogleSignup = () => {
-    signIn('google', { callbackUrl: '/' })
   }
 
   return (
@@ -74,7 +97,8 @@ export default function RegisterPage() {
           {/* Google Signup */}
           <button
             onClick={handleGoogleSignup}
-            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium"
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-3 px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 transition font-medium disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Chrome className="w-5 h-5" />
             Continue with Google

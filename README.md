@@ -1,318 +1,391 @@
-# SHOP.CO - Modern E-Commerce Application
+# SHOP.SAKU — Next.js E-Commerce Application
 
-A fully functional e-commerce web application built with Next.js 14 App Router, featuring Firebase authentication, protected routes, product management, and a clean, responsive UI. Created as part of the EJP-12 Next.js Task.
+## 🚀 Live Demo
+**[View Live Site](https://e-commerce-website-only-next-js-niv.vercel.app/)**
 
-## 🔗 Links
+## 📝 Short Description
+SHOP.SAKU is a modern e-commerce web application built with **Next.js 14 App Router** and **NextAuth.js** authentication. The project demonstrates a complete full-stack implementation with public and protected pages, user authentication (Google OAuth & Credentials), product management system, shopping cart functionality, and a polished, responsive UI with glass morphism effects.
 
-- **GitHub Repository**: [https://github.com/yousufhasany/e-commerce-website-only-Next.js](https://github.com/yousufhasany/e-commerce-website-only-Next.js)
-- **Live Demo**: [https://e-commerce-website-only-next-js-niv.vercel.app](https://e-commerce-website-only-next-js-niv.vercel.app)
+## ✨ Key Features
 
-## 🚀 Quick Start
+- **Complete Landing Page** with 7 distinct UI sections
+- **Dual Authentication** - Google OAuth and Email/Password login using NextAuth.js
+- **Protected Routes** - Add Product and Manage Products pages with authentication guards
+- **Product Management** - Full CRUD operations with instant localStorage persistence
+- **Shopping Cart** - Add to cart functionality with persistent storage
+- **Responsive Design** - Mobile-first approach with hamburger menu for mobile devices
+- **Polished UI** - Glass morphism effects, hover states, smooth transitions, and animations
+- **Search Functionality** - Real-time product search with suggestions
+- **Category Browsing** - Organized product categories (Casual, Formal, Party, Gym)
 
-```bash
-# Clone the repository
-git clone https://github.com/yousufhasany/e-commerce-website-only-Next.js.git
-cd e-commerce-website-only-Next.js
+## 📄 Route Summary
 
-# Install dependencies
-npm install
+| Route | Description | Access Type |
+|-------|-------------|-------------|
+| `/` | Landing Page with Hero, New Arrivals, Top Selling, Browse by Style, Testimonials, Newsletter | Public |
+| `/login` | Login Page (Google OAuth + Email/Password) | Public |
+| `/register` | Registration Page with background image and glass morphism | Public |
+| `/new-arrivals` | New Arrivals Product List (6+ items) | Public |
+| `/on-sale` | On Sale Product List | Public |
+| `/brands` | Brands Page | Public |
+| `/category/[category]` | Category-specific Product List (Casual, Formal, Party, Gym) | Public |
+| `/products/[id]` | Product Details Page with full description, price, color/size selection | Public |
+| `/search` | Search Results Page | Public |
+| `/cart` | Shopping Cart with quantity management | Public |
+| `/add-product` | Add New Product Form | **Protected** (Login Required) |
+| `/manage-products` | Manage Products Table with View/Delete actions | **Protected** (Login Required) |
 
-# Set up environment variables (see .env.local.example)
-cp .env.local.example .env.local
-# Edit .env.local with your Firebase credentials
+## 🏗️ Landing Page Breakdown
 
-# Run development server
-npm run dev
+### 1. **Navbar** (Sticky, Responsive)
+   - SHOP.SAKU logo linking to home
+   - Navigation menu with 4+ routes: Shop (dropdown with categories), On Sale, New Arrivals, Brands
+   - **Mobile hamburger menu** for responsive navigation
+   - Search bar with real-time suggestions
+   - Shopping cart icon
+   - **Authentication-aware UI**:
+     - Before login: Login and Register buttons
+     - After login: User dropdown with:
+       - User name and email
+       - Add Product link
+       - Manage Products link
+       - Sign Out button
 
-# Run backend server (optional)
-npm run server
+### 2. **Hero Section**
+   - Bold headline: "FIND CLOTHES THAT MATCHES YOUR STYLE"
+   - Subtitle with brand description
+   - Primary CTA: "Shop Now" button linking to Casual category
+   - Statistics display: 200+ Brands, 2,000+ Products, 30,000+ Customers
+   - Professional background with styling
 
-# Open browser
-http://localhost:3000
-```
+### 3. **New Arrivals Section**
+   - Grid of 4 product cards
+   - Each card includes product image, name, rating, and price
 
-## ✅ All Requirements Fulfilled
+### 4. **Top Selling Section**
+   - Grid of 4 best-selling product cards
+   - Uniform spacing and responsive grid
 
-### ✓ 1. Landing Page (7 Sections)
-- **Navbar**: Logo, 4+ routes (Shop dropdown, On Sale, New Arrivals, Brands), sticky, responsive
-- **After Login**: User dropdown with name/email, Add Product, Manage Products, Sign Out
-- **Hero**: Headline, subtitle, CTA button, stats, fashion image
-- **New Arrivals**: 4 product cards with View All
-- **Top Selling**: 4 products with discount badges
-- **Browse by Style**: 4 category cards (Casual/Formal/Party/Gym)
-- **Testimonials**: Customer reviews carousel
-- **Newsletter**: Email subscription
-- **Footer**: Links, social icons, payment methods, copyright
+### 5. **Browse by Style Section**
+   - 4 category cards: Casual, Formal, Party, Gym
+   - Large background images with hover effects
 
-### ✓ 2. Login/Register Pages
-- **Firebase Authentication** (Google OAuth + Email/Password)
-- Social login and email/password forms
-- Redirects to home (/) after successful login
-- User data stored in Firebase Authentication
-- Toast notifications for success/error feedback
+### 6. **Testimonials Section**
+   - Customer reviews with 5-star ratings
+   - Responsive card layout
 
-### ✓ 3. Item List Page (`/category/[category]`)
-- Page title + description
-- **Search bar** (functional filtering)
-- **Category filters**: Price slider, colors, sizes, dress styles
-- Grid of 6+ product cards with:
-  - Image, Title, Description (1-2 lines, ellipsis)
-  - Price/discount, Star rating
-  - Details button → product page
-- Responsive: 1/2/3 column layout
+### 7. **Newsletter Section**
+   - Email subscription form
+   - Clean, centered design
 
-### ✓ 4. Item Details Page (`/products/[id]`)
-- Large image gallery with thumbnails
-- Product title & breadcrumb navigation
-- Full description text
-- Meta info: price, rating, reviews
-- Color & size selection
-- Add to cart functionality
-- **Back button** (breadcrumb navigation)
-- Related products section
+### 8. **Footer**
+   - SHOP.SAKU branding with links
+   - Social media icons
+   - Copyright notice
+   - Payment method badges
 
-### ✓ 5. Protected: Add Product (`/add-product`)
-- **Authentication guard**: Redirects to /login if not logged in
-- Form fields:
-  - Title*, Short Description*, Full Description*
-  - Price*, Category* (dropdown)
-  - Optional Image URL with preview
-- Submit button with loading state
-- **Toast notification** on success
-- Validation & error handling
+## 🛍️ Item List Pages
 
-### ✓ 6. Protected: Manage Products (`/manage-products`)
-- **Authentication guard**: Protected route
-- Product table (desktop) / cards (mobile)
-- Actions: **View** (opens details), **Delete** (with confirmation)
-- "Add Product" button in header
-- Clean, responsive layout
-- Empty state handling
+**Pages:** `/new-arrivals`, `/on-sale`, `/brands`, `/category/[category]`
 
-### ✓ UI Guidelines
-- **Layout**: Consistent spacing, responsive (mobile/tablet/desktop)
-- **Typography**: Clear hierarchy, readable fonts
-- **Colors**: Black/gray palette, high contrast
-- **Cards**: Uniform with hover/focus states, responsive grids
-- **Forms**: Labels, icons, inline validation, loading states
-- **Interactions**: Hover/focus effects, smooth transitions (200-300ms)
-- **Consistency**: Rounded corners, shadows, spacing scale
+### Features:
+- Page title and description
+- Search bar for filtering
+- **Minimum 6 product cards** in responsive grid
+- Each card includes:
+  - Product image
+  - Title
+  - Short description (ellipsis)
+  - Price/discount
+  - Star rating
+  - "View Details" button
+- Mobile-responsive (1 column mobile, 2-3 tablet, 4 desktop)
 
-## 🛠️ Technologies
+## 📦 Item Details Page
 
-- **Next.js 14** (App Router, Server Components, TypeScript)
-- **Firebase** (Authentication, Firestore, Cloud Storage)
-- **NextAuth.js 5.0** (Session management)
-- **Tailwind CSS 3.3** (Responsive styling)
-- **Express.js 5.1** (Optional backend API)
-- **React Hot Toast** (Toast notifications)
-- **Lucide React** (Icon library)
-- **bcryptjs** (Password hashing)
+**Route:** `/products/[id]`
 
-## 📁 Routes
+### Features:
+- Large product image
+- Product title and full description
+- Star rating and reviews
+- Price with discount
+- Color and size selection
+- Quantity selector
+- "Add to Cart" button
+- Related Products section
 
-| Route | Type | Description |
-|-------|------|-------------|
-| `/` | Public | Home (7 sections) |
-| `/login` | Public | Login page |
-| `/register` | Public | Register page |
-| `/category/[category]` | Public | Item list with search & filters |
-| `/products/[id]` | Public | Item details |
-| `/cart` | Public | Shopping cart |
-| `/search` | Public | Search results |
-| `/add-product` | Protected | Add new product |
-| `/manage-products` | Protected | Manage products table |
+## 🔒 Protected Page: Add Product
 
-## 🔐 Authentication
+**Route:** `/add-product` (Requires Login)
 
-**Firebase Authentication** with NextAuth.js session management:
-- **Google OAuth**: Sign in with Google account
-- **Email/Password**: Create account with email and secure password
-- Protected routes automatically redirect to `/login`
-- User dropdown shows after login with Add/Manage product links
-- Firebase handles user creation and authentication
-- NextAuth manages sessions for protected routes
+### Security:
+- Server-side NextAuth session check
+- Automatic redirect to `/login` if not authenticated
 
-## 📦 Installation
+### Form Fields:
+- Product Name (required)
+- Short Description (required)
+- Full Description (required)
+- Price (required, USD)
+- Category (select: Casual, Formal, Party, Gym)
+- Image URL (required)
 
-### 1. Clone & Install
-```bash
-git clone https://github.com/yousufhasany/e-commerce-website-only-Next.js.git
-cd e-commerce-website-only-Next.js
-npm install
-```
+### Functionality:
+- Submit adds product to localStorage instantly
+- Toast confirmation message
+- Auto-redirect to `/manage-products`
+- No loading delays
 
-### 2. Firebase Setup
-1. Go to [Firebase Console](https://console.firebase.google.com/)
-2. Create a new project
-3. Enable **Authentication** → Email/Password and Google providers
-4. Enable **Firestore Database** (optional for product storage)
-5. Enable **Cloud Storage** (optional for image uploads)
-6. Copy your Firebase config
+## 📋 Protected Page: Manage Products
 
-### 3. Environment Variables
-Create `.env.local` in the root directory:
+**Route:** `/manage-products` (Requires Login)
+
+### Features:
+- Product table/grid with all products
+- Each entry shows: image, name, category, price, description
+- **Actions:**
+  - **View** - Go to product details
+  - **Delete** - Remove with confirmation
+- Responsive layout (table on desktop, cards on mobile)
+- Real-time updates via localStorage
+
+## 🎨 UI Guidelines & Design System
+
+### Layout & Responsiveness
+- Mobile-first with breakpoints: sm(640px), md(768px), lg(1024px), xl(1280px)
+- Consistent spacing using Tailwind scale
+- Max-width containers for centering
+- Responsive grids and flexbox
+
+### Typography & Colors
+- **Font Hierarchy:** h1(36px), h2(24px), body(16px), small(14px)
+- **Colors:** Black primary, gray scale, white with transparency
+- **Text:** gray-900 primary, gray-600 secondary
+
+### Cards, Lists & Forms
+- Uniform white cards with shadows and rounded corners
+- Hover states: scale, shadow, background changes
+- Form styling with focus rings and validation
+- All transitions smooth (300ms)
+
+### Interactions
+- Glass morphism (backdrop-blur, semi-transparent)
+- Hover/focus on all interactive elements
+- Micro-animations for transitions
+- Visual consistency throughout
+
+## 🛠️ Technologies Used
+
+### Frontend
+- **Next.js 14.2.33** - App Router
+- **React 19** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS 3.3** - Styling
+- **Lucide React** - Icons
+- **React Hot Toast** - Notifications
+
+### Authentication
+- **NextAuth.js 5.0-beta** - Auth library
+- **Firebase Auth 12.6.0** - Google OAuth + Email/Password
+- **Firebase Firestore** - User data storage
+
+### Storage
+- **localStorage** - Products and cart (instant performance)
+
+### Deployment
+- **Vercel** - Hosting with auto-deploy
+- **GitHub** - Version control
+
+## 📦 Installation & Setup
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Firebase project with Authentication enabled
+
+### Environment Variables
+Create `.env.local`:
 
 ```env
-# NextAuth Configuration
+# NextAuth
+AUTH_SECRET=your-secret
 NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=your-random-secret-key-minimum-32-characters
 
-# Firebase Configuration
+# Firebase
 NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
 NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
 NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
 NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
 ```
 
-**Generate NEXTAUTH_SECRET:**
-```bash
-openssl rand -base64 32
-```
+### Installation
 
-### 4. Run Development
 ```bash
-# Frontend only (port 3000)
+# Clone repository
+git clone https://github.com/yousufhasany/e-commerce-website-only-Next.js.git
+
+# Install dependencies
+cd e-commerce-website-only-Next.js
+npm install
+
+# Run development server
 npm run dev
 
-# Frontend + Backend API (ports 3000 & 3001)
-npm run dev:all
+# Open http://localhost:3000
 ```
 
-### 5. Open Browser
-Navigate to `http://localhost:3000`
+### Build for Production
 
-## 🎯 Features Checklist
-
-✅ Navbar with 4+ routes, sticky, responsive  
-✅ User dropdown after login (name, email, Add Product, Manage Products, Sign Out)  
-✅ Hero section with CTA  
-✅ 4 content sections (New Arrivals, Top Selling, Browse Style, Testimonials)  
-✅ Footer with links & social icons  
-✅ Login/Register with Google OAuth + Credentials  
-✅ Item list with search & filters  
-✅ Item details with large image & description  
-✅ Protected Add Product form with toast notifications  
-✅ Protected Manage Products with View/Delete actions  
-✅ Responsive design (mobile/tablet/desktop)  
-✅ Hover/focus states on all interactive elements  
-✅ Form validation & loading states  
-✅ Express.js backend with REST API  
-
-## 🌐 API Endpoints (Express Backend)
-
-```
-GET    /api/products          # Get all products
-GET    /api/products/:id      # Get product by ID
-POST   /api/products          # Create product
-PUT    /api/products/:id      # Update product
-DELETE /api/products/:id      # Delete product
-GET    /api/health            # Health check
-```
-
-## 📱 Responsive Breakpoints
-
-- **Mobile**: < 768px (1 column)
-- **Tablet**: 768px - 1024px (2 columns)
-- **Desktop**: > 1024px (3-4 columns)
-
-## 🎨 UI Components
-
-- Uniform product cards with hover effects
-- Form inputs with icons & validation
-- Toast notifications for success/error
-- Loading spinners on buttons
-- Modal confirmations for delete
-- Dropdown menus with animations
-- Image galleries with thumbnails
-- Star ratings & review displays
-
-## 🚀 Deployment to Vercel
-
-### Prerequisites
-- GitHub account with repository pushed
-- Vercel account (free tier works)
-- Firebase project set up
-
-### Step-by-Step Deployment
-
-1. **Push to GitHub**
 ```bash
-git add .
-git commit -m "Ready for deployment"
-git push origin main
+npm run build
+npm start
 ```
 
-2. **Import to Vercel**
-   - Go to [vercel.com](https://vercel.com)
-   - Click "Add New Project"
-   - Import your GitHub repository
-   - Select the repository: `e-commerce-website-only-Next.js`
+### Deploy to Vercel
 
-3. **Configure Environment Variables**
-   In Vercel project settings, add these environment variables:
-   ```
-   NEXTAUTH_URL=https://your-project.vercel.app
-   NEXTAUTH_SECRET=your-random-secret-key-minimum-32-characters
-   NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
-   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-   NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
-   ```
+```bash
+# Install Vercel CLI
+npm install -g vercel
 
-4. **Update Firebase Settings**
-   - In Firebase Console → Authentication → Settings
-   - Add authorized domain: `your-project.vercel.app`
+# Deploy
+vercel
+```
 
-5. **Deploy**
-   - Click "Deploy"
-   - Wait for build to complete
-   - Visit your live site!
+Or push to GitHub and import in Vercel dashboard.
 
-### Alternative Deployment Options
-- **Netlify**: Similar process, import from GitHub
-- **Railway**: For full-stack with Express backend
-- **Firebase Hosting**: Native Firebase deployment
+## 📁 Project Structure
 
-## 📝 Notes
+```
+e-commerce-website-only-Next.js/
+├── src/
+│   ├── app/
+│   │   ├── add-product/page.tsx          # Protected
+│   │   ├── manage-products/page.tsx      # Protected
+│   │   ├── login/page.tsx
+│   │   ├── register/page.tsx
+│   │   ├── cart/page.tsx
+│   │   ├── products/[id]/page.tsx
+│   │   ├── category/[category]/page.tsx
+│   │   ├── new-arrivals/page.tsx
+│   │   ├── on-sale/page.tsx
+│   │   ├── brands/page.tsx
+│   │   ├── search/page.tsx
+│   │   ├── layout.tsx
+│   │   └── page.tsx                      # Landing Page
+│   ├── components/
+│   │   ├── Header.tsx
+│   │   ├── Footer.tsx
+│   │   ├── Hero.tsx
+│   │   ├── NewArrivals.tsx
+│   │   ├── TopSelling.tsx
+│   │   ├── BrowseByStyle.tsx
+│   │   ├── Testimonials.tsx
+│   │   ├── Newsletter.tsx
+│   │   ├── ProductCard.tsx
+│   │   ├── ProductDetails.tsx
+│   │   ├── Cart.tsx
+│   │   ├── AddProductForm.tsx
+│   │   ├── ManageProductsTable.tsx
+│   │   └── Providers.tsx
+│   ├── lib/
+│   │   └── firebase-helpers.ts
+│   └── auth.ts
+├── public/
+│   └── manifest.json
+├── .env.local
+└── package.json
+```
 
-- Mock data currently used (can integrate Firebase Firestore for persistence)
-- Backend API optional (frontend works standalone)
-- Firebase handles all authentication
-- All 7 landing sections implemented
-- All protected routes have authentication guards
-- Search & filters fully functional
-- Responsive design works on all devices
+## 🔑 Authentication Flow
 
-## 🐛 Troubleshooting
+1. User visits protected route (`/add-product` or `/manage-products`)
+2. Server-side session check validates authentication
+3. If not authenticated → redirect to `/login`
+4. User logs in with Google or Email/Password
+5. Firebase creates/validates user
+6. User data saved to Firestore (background)
+7. NextAuth session created
+8. Redirect to homepage
+9. Header shows user dropdown
+10. Protected routes now accessible
 
-**Auth not working?**  
-→ Check `.env.local` file exists with all Firebase credentials  
-→ Verify NEXTAUTH_SECRET is set (minimum 32 characters)
+## ✅ Requirements Checklist
 
-**Can't access protected pages?**  
-→ Create an account on the register page first  
-→ Sign in with your email/password or Google
+### Landing Page (7 Sections) ✓
+- [x] Navbar: logo, 4+ routes, login/register, sticky, responsive, mobile menu
+- [x] After login: user dropdown with Add Product, Manage Products
+- [x] Hero: headline, subtitle, CTA
+- [x] New Arrivals + Top Selling sections
+- [x] Browse by Style categories
+- [x] Testimonials
+- [x] Newsletter + Footer
 
-**Google login fails?**  
-→ Enable Google provider in Firebase Console  
-→ Check Firebase config in `.env.local`  
-→ Verify authorized domains in Firebase settings
+### Login/Register ✓
+- [x] Google OAuth + Email/Password
+- [x] Redirect to home after login
+- [x] Glass morphism UI
 
-**Build fails on Vercel?**  
-→ Check all environment variables are set  
-→ Verify Firebase credentials are correct  
-→ Check build logs for specific errors
+### Item List ✓
+- [x] Title + description
+- [x] Search bar
+- [x] 6+ product cards with all required fields
+- [x] Responsive grid
 
-**Firebase errors?**  
-→ Verify Firebase project is active  
-→ Check Authentication is enabled  
-→ Ensure all Firebase services are configured
+### Item Details ✓
+- [x] Large image, title, full description
+- [x] Meta info (price, rating)
+- [x] Add to cart functionality
+
+### Protected: Add Product ✓
+- [x] Login required
+- [x] All form fields
+- [x] Toast confirmation
+- [x] Instant save
+
+### Protected: Manage Products ✓
+- [x] Login required
+- [x] Product list with View/Delete
+- [x] Responsive layout
+
+### UI Guidelines ✓
+- [x] Responsive design
+- [x] Typography hierarchy
+- [x] Uniform cards with hover states
+- [x] Clean forms
+- [x] Visual consistency
+
+### Technologies ✓
+- [x] Next.js App Router
+- [x] NextAuth.js
+- [x] Vercel deployment
+
+### Submission ✓
+- [x] GitHub: [Repository Link](https://github.com/yousufhasany/e-commerce-website-only-Next.js)
+- [x] Live Demo: [SHOP.SAKU](https://e-commerce-website-only-next-js-niv.vercel.app/)
+- [x] README with all details
+
+## 🎉 Additional Features
+
+- Shopping cart with persistence
+- Real-time search suggestions
+- Related products
+- Customer reviews
+- Newsletter subscription
+- PWA support
+- Optimized performance (2-3s account creation)
+- Toast notifications
+
+## 📞 Support
+
+For issues or questions, open an issue on [GitHub](https://github.com/yousufhasany/e-commerce-website-only-Next.js/issues).
 
 ---
 
-**Project fulfills all EJP-12 Next.js Task requirements ✅**
+**Built with ❤️ using Next.js 14, NextAuth.js, and Tailwind CSS**
+
+**Live:** https://e-commerce-website-only-next-js-niv.vercel.app/
+
+**GitHub:** https://github.com/yousufhasany/e-commerce-website-only-Next.js

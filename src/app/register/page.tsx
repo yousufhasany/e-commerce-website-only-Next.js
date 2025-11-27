@@ -29,6 +29,7 @@ export default function RegisterPage() {
         // Create NextAuth session with user info
         const result = await signIn('credentials', {
           email: firebaseUser.email,
+          name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'User',
           password: 'google-oauth-user', // Dummy password for OAuth users
           redirect: false,
         })
@@ -75,6 +76,7 @@ export default function RegisterPage() {
         // Create NextAuth session for session management
         const result = await signIn('credentials', {
           email,
+          name,
           password,
           redirect: false,
         })

@@ -161,6 +161,28 @@ import {
   updateProfile
 } from 'firebase/auth'
 
+// Save or update user in Firestore
+async function saveUserToFirestore(uid: string, email: string, displayName: string) {
+  try {
+    const userRef = doc(db, 'users', uid)
+    const userSnap = await getDoc(userRef)
+    
+    if (!userSnap.exists()) {
+      // Create new user document
+      await addDoc(collection(db, 'users'), {
+        uid,
+        email,
+        displayName,
+        createdAt: new Date().toISOString()
+      })
+    }
+    return { success: true }
+  } catch (error) {
+    console.error('Error saving user to Firestore:', error)
+    return { success: false, error }
+  }
+}
+
 // Sign up with email and password
 export async function signUpWithEmail(email: string, password: string, displayName?: string) {
   try {
@@ -169,6 +191,13 @@ export async function signUpWithEmail(email: string, password: string, displayNa
     // Update user profile with display name if provided
     if (displayName && userCredential.user) {
       await updateProfile(userCredential.user, { displayName })
+      
+      // Save user to Firestore
+      await saveUserToFirestore(
+        userCredential.user.uid,
+        email,
+        displayName
+      )
     }
     
     return userCredential.user
@@ -198,6 +227,16 @@ export async function signInWithGoogle() {
       prompt: 'select_account'
     })
     const result = await signInWithPopup(auth, provider)
+    
+    // Save user to Firestore (creates if doesn't exist)
+    if (result.user) {
+      await saveUserToFirestore(
+        result.user.uid,
+        result.user.email || '',
+        result.user.displayName || result.user.email?.split('@')[0] || 'User'
+      )
+    }
+    
     return result.user
   } catch (error: any) {
     console.error('Error signing in with Google:', error)

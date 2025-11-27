@@ -13,16 +13,18 @@ export const authConfig: NextAuthConfig = {
       name: "Credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        name: { label: "Name", type: "text" }
       },
       async authorize(credentials) {
         // Firebase handles authentication, this is just for NextAuth session
-        // You can add additional validation here if needed
-        if (credentials?.email && credentials?.password) {
+        if (credentials?.email) {
           const email = credentials.email as string
+          const name = credentials.name as string || email.split('@')[0]
+          
           return {
             id: email,
-            name: email.split('@')[0],
+            name: name,
             email: email,
           }
         }

@@ -14,9 +14,8 @@ export default function ManageProductsTable() {
   }, [])
 
   const loadProducts = () => {
-    setLoading(true)
     try {
-      // Load products from localStorage
+      // Load products from localStorage instantly
       const storedProducts = localStorage.getItem('products')
       if (storedProducts) {
         setProducts(JSON.parse(storedProducts))
@@ -48,9 +47,8 @@ export default function ManageProductsTable() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-        <p className="text-gray-600">Loading products...</p>
+      <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-black mx-auto"></div>
       </div>
     )
   }

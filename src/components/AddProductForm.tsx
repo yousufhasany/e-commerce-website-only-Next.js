@@ -65,11 +65,9 @@ export default function AddProductForm() {
         imageUrl: '',
       })
       
-      // Redirect to manage products after 1 second
-      setTimeout(() => {
-        router.push('/manage-products')
-        router.refresh()
-      }, 1000)
+      // Redirect immediately
+      router.push('/manage-products')
+      router.refresh()
       
     } catch (error) {
       console.error('Error adding product:', error)

@@ -77,10 +77,15 @@ export default function RegisterPage() {
 
     try {
       // Show loading message
-      toast.loading('Creating your account...', { id: 'signup' })
+      const loadingToast = toast.loading('Creating your account...', { id: 'signup' })
       
-      // Register with Firebase
-      const firebaseUser = await signUpWithEmail(email, password, name)
+      // Register with Firebase with timeout
+      const firebaseUser = await Promise.race([
+        signUpWithEmail(email, password, name),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timeout - please check your connection')), 10000)
+        )
+      ]) as any
       
       if (firebaseUser) {
         // Create NextAuth session for session management

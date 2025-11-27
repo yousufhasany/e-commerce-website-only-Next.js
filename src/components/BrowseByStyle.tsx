@@ -2,9 +2,9 @@ import Link from 'next/link'
 
 export default function BrowseByStyle() {
   const styles = [
-    { name: 'Casual', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400&h=300&fit=crop', link: '/category/casual' },
+    { name: 'Casual', image: 'https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=400&h=300&fit=crop', link: '/category/casual' },
     { name: 'Formal', image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=300&fit=crop', link: '/category/formal' },
-    { name: 'Party', image: 'https://images.unsplash.com/photo-1566665797739-1674de7a421a?w=400&h=300&fit=crop', link: '/category/party' },
+    { name: 'Party', image: 'https://images.unsplash.com/photo-1566804221442-457f939f5aea?w=400&h=300&fit=crop', link: '/category/party' },
     { name: 'Gym', image: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400&h=300&fit=crop', link: '/category/gym' },
   ]
 

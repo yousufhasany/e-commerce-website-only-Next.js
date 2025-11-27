@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import toast, { Toaster } from 'react-hot-toast'
 import { Package, DollarSign, Calendar, Image as ImageIcon } from 'lucide-react'
+import { addProduct } from '@/lib/firebase-helpers'
 
 export default function AddProductForm() {
   const router = useRouter()
@@ -29,30 +30,42 @@ export default function AddProductForm() {
     setLoading(true)
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      
-      // In real app, you'd send to your backend API
-      console.log('Product data:', formData)
-      
-      toast.success('Product added successfully!')
-      
-      // Reset form
-      setFormData({
-        title: '',
-        shortDescription: '',
-        fullDescription: '',
-        price: '',
-        category: 'casual',
-        imageUrl: '',
+      // Save to Firebase Firestore
+      const result = await addProduct({
+        name: formData.title,
+        shortDescription: formData.shortDescription,
+        description: formData.fullDescription,
+        price: parseFloat(formData.price),
+        category: formData.category,
+        image: formData.imageUrl || 'https://via.placeholder.com/400?text=No+Image',
+        rating: 0,
+        reviews: 0,
       })
       
-      // Redirect to manage products after 2 seconds
-      setTimeout(() => {
-        router.push('/manage-products')
-      }, 2000)
+      if (result.success) {
+        toast.success('Product added successfully!')
+        
+        // Reset form
+        setFormData({
+          title: '',
+          shortDescription: '',
+          fullDescription: '',
+          price: '',
+          category: 'casual',
+          imageUrl: '',
+        })
+        
+        // Redirect to manage products after 1 second
+        setTimeout(() => {
+          router.push('/manage-products')
+          router.refresh()
+        }, 1000)
+      } else {
+        throw new Error('Failed to add product')
+      }
       
     } catch (error) {
+      console.error('Error adding product:', error)
       toast.error('Failed to add product. Please try again.')
     } finally {
       setLoading(false)

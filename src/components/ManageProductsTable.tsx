@@ -1,70 +1,58 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Eye, Trash2, Plus } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
-
-// Mock products data
-const initialProducts = [
-  {
-    id: 1,
-    name: 'T-shirt with Tape Details',
-    shortDescription: 'Comfortable cotton t-shirt with unique tape details',
-    price: 120,
-    category: 'casual',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop',
-  },
-  {
-    id: 2,
-    name: 'Polo with Tipping Details',
-    shortDescription: 'Classic polo shirt with distinctive tipping',
-    price: 180,
-    category: 'casual',
-    image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=100&h=100&fit=crop',
-  },
-  {
-    id: 3,
-    name: 'Black Striped T-shirt',
-    shortDescription: 'Stylish black striped t-shirt for any occasion',
-    price: 120,
-    category: 'casual',
-    image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=100&h=100&fit=crop',
-  },
-  {
-    id: 4,
-    name: 'Skinny Fit Jeans',
-    shortDescription: 'Modern skinny fit jeans with stretch fabric',
-    price: 240,
-    category: 'casual',
-    image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=100&h=100&fit=crop',
-  },
-  {
-    id: 5,
-    name: 'Checkered Shirt',
-    shortDescription: 'Classic checkered pattern shirt',
-    price: 180,
-    category: 'casual',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=100&h=100&fit=crop',
-  },
-  {
-    id: 6,
-    name: 'Classic Blazer',
-    shortDescription: 'Professional blazer for formal occasions',
-    price: 320,
-    category: 'formal',
-    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=100&h=100&fit=crop',
-  },
-]
+import { getAllProducts, deleteProduct } from '@/lib/firebase-helpers'
 
 export default function ManageProductsTable() {
-  const [products, setProducts] = useState(initialProducts)
+  const [products, setProducts] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const handleDelete = (id: number, name: string) => {
-    if (confirm(`Are you sure you want to delete "${name}"?`)) {
-      setProducts(products.filter(p => p.id !== id))
-      toast.success('Product deleted successfully!')
+  useEffect(() => {
+    loadProducts()
+  }, [])
+
+  const loadProducts = async () => {
+    setLoading(true)
+    try {
+      const result = await getAllProducts()
+      if (result.success && result.products) {
+        setProducts(result.products)
+      }
+    } catch (error) {
+      console.error('Error loading products:', error)
+      toast.error('Failed to load products')
+    } finally {
+      setLoading(false)
     }
+  }
+
+  const handleDelete = async (id: string, name: string) => {
+    if (confirm(`Are you sure you want to delete "${name}"?`)) {
+      try {
+        const result = await deleteProduct(id)
+        if (result.success) {
+          setProducts(products.filter(p => p.id !== id))
+          toast.success('Product deleted successfully!')
+        } else {
+          throw new Error('Failed to delete')
+        }
+      } catch (error) {
+        console.error('Error deleting product:', error)
+        toast.error('Failed to delete product')
+      }
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading products...</p>
+      </div>
+    )
   }
 
   return (

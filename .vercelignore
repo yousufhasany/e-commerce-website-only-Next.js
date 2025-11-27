@@ -1,0 +1,11 @@
+node_modules
+.next
+.env.local
+.git
+*.log
+server.js
+DEPLOYMENT.md
+DEPLOYMENT_CHECKLIST.md
+PROJECT_SUMMARY.md
+ROUTES.md
+COMPLETION_SUMMARY.md

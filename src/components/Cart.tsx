@@ -14,38 +14,8 @@ interface CartItem {
   quantity: number
 }
 
-const initialCartItems: CartItem[] = [
-  {
-    id: 1,
-    name: 'Gradient Graphic T-shirt',
-    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop',
-    size: 'Large',
-    color: 'White',
-    price: 145,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    name: 'Checkered Shirt',
-    image: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=100&h=100&fit=crop',
-    size: 'Medium',
-    color: 'Red',
-    price: 180,
-    quantity: 1,
-  },
-  {
-    id: 3,
-    name: 'Skinny Fit Jeans',
-    image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=100&h=100&fit=crop',
-    size: 'Large',
-    color: 'Blue',
-    price: 240,
-    quantity: 1,
-  },
-]
-
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
+  const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [promoCode, setPromoCode] = useState('')
   const [discount, setDiscount] = useState(0.2) // 20% discount
 

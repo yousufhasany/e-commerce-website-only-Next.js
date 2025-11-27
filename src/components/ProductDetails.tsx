@@ -249,13 +249,34 @@ export default function ProductDetails({ productId }: ProductDetailsProps) {
   }
 
   const handleAddToCart = () => {
-    console.log('Added to cart:', {
-      product: product.name,
-      color: selectedColor,
-      size: selectedSize,
-      quantity,
-    })
-    alert('Product added to cart!')
+    try {
+      // Get existing cart from localStorage
+      const existingCart = localStorage.getItem('cart')
+      const cart = existingCart ? JSON.parse(existingCart) : []
+      
+      // Create cart item
+      const cartItem = {
+        id: Date.now(), // Unique ID for cart item
+        productId: product.id,
+        name: product.name,
+        image: product.images[0],
+        price: product.price,
+        color: selectedColor,
+        size: selectedSize,
+        quantity: quantity,
+      }
+      
+      // Add to cart
+      cart.push(cartItem)
+      
+      // Save to localStorage
+      localStorage.setItem('cart', JSON.stringify(cart))
+      
+      alert(`${product.name} added to cart!`)
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+      alert('Failed to add to cart')
+    }
   }
 
   return (

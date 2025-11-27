@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Minus, Plus, Trash2, Tag, ArrowRight } from 'lucide-react'
 
@@ -19,17 +19,35 @@ export default function Cart() {
   const [promoCode, setPromoCode] = useState('')
   const [discount, setDiscount] = useState(0.2) // 20% discount
 
+  // Load cart from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedCart = localStorage.getItem('cart')
+      if (storedCart) {
+        setCartItems(JSON.parse(storedCart))
+      }
+    } catch (error) {
+      console.error('Error loading cart:', error)
+    }
+  }, [])
+
+  // Save cart to localStorage whenever it changes
+  const saveCart = (items: CartItem[]) => {
+    setCartItems(items)
+    localStorage.setItem('cart', JSON.stringify(items))
+  }
+
   const updateQuantity = (id: number, newQuantity: number) => {
     if (newQuantity < 1) return
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+    const updatedItems = cartItems.map(item =>
+      item.id === id ? { ...item, quantity: newQuantity } : item
     )
+    saveCart(updatedItems)
   }
 
   const removeItem = (id: number) => {
-    setCartItems(items => items.filter(item => item.id !== id))
+    const updatedItems = cartItems.filter(item => item.id !== id)
+    saveCart(updatedItems)
   }
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)

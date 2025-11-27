@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Eye, Trash2, Plus } from 'lucide-react'
 import toast, { Toaster } from 'react-hot-toast'
-import { getAllProducts, deleteProduct } from '@/lib/firebase-helpers'
 
 export default function ManageProductsTable() {
   const [products, setProducts] = useState<any[]>([])
@@ -14,44 +13,32 @@ export default function ManageProductsTable() {
     loadProducts()
   }, [])
 
-  const loadProducts = async () => {
+  const loadProducts = () => {
     setLoading(true)
     try {
-      const result = await Promise.race([
-        getAllProducts(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Request timeout')), 10000)
-        )
-      ]) as any
-      
-      if (result.success && result.products) {
-        setProducts(result.products)
+      // Load products from localStorage
+      const storedProducts = localStorage.getItem('products')
+      if (storedProducts) {
+        setProducts(JSON.parse(storedProducts))
       } else {
         setProducts([])
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error loading products:', error)
-      if (error.message === 'Request timeout') {
-        toast.error('Loading products is taking too long. Please refresh the page.')
-      } else {
-        toast.error('Failed to load products. You can still add new products.')
-      }
+      toast.error('Failed to load products')
       setProducts([])
     } finally {
       setLoading(false)
     }
   }
 
-  const handleDelete = async (id: string, name: string) => {
+  const handleDelete = (id: string, name: string) => {
     if (confirm(`Are you sure you want to delete "${name}"?`)) {
       try {
-        const result = await deleteProduct(id)
-        if (result.success) {
-          setProducts(products.filter(p => p.id !== id))
-          toast.success('Product deleted successfully!')
-        } else {
-          throw new Error('Failed to delete')
-        }
+        const updatedProducts = products.filter(p => p.id !== id)
+        setProducts(updatedProducts)
+        localStorage.setItem('products', JSON.stringify(updatedProducts))
+        toast.success('Product deleted successfully!')
       } catch (error) {
         console.error('Error deleting product:', error)
         toast.error('Failed to delete product')

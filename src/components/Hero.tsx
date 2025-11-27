@@ -15,7 +15,7 @@ export default function Hero() {
               Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.
             </p>
             <Link 
-              href="/shop"
+              href="/new-arrivals"
               className="inline-block bg-black text-white px-12 py-4 rounded-full hover:bg-gray-800 transition font-medium"
             >
               Shop Now

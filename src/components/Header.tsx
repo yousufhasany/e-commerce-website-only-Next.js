@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
 import Link from 'next/link'
-import { Search, ShoppingCart, User, ChevronDown, LogOut, Package, Settings } from 'lucide-react'
+import { Search, ShoppingCart, User, ChevronDown, LogOut, Package, Settings, Menu, X } from 'lucide-react'
 
 // Mock products for search suggestions
 const allProducts = [
@@ -117,6 +117,7 @@ function UserMenu() {
 export default function Header() {
   const [searchQuery, setSearchQuery] = useState('')
   const [showMobileSearch, setShowMobileSearch] = useState(false)
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
   const [suggestions, setSuggestions] = useState<typeof allProducts>([])
   const searchRef = useRef<HTMLDivElement>(null)
@@ -253,6 +254,12 @@ export default function Header() {
           {/* Icons */}
           <div className="flex items-center space-x-4">
             <button 
+              onClick={() => setShowMobileMenu(!showMobileMenu)}
+              className="md:hidden p-2 hover:bg-gray-100 rounded-full"
+            >
+              {showMobileMenu ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+            <button 
               onClick={() => setShowMobileSearch(!showMobileSearch)}
               className="lg:hidden p-2 hover:bg-gray-100 rounded-full"
             >
@@ -310,6 +317,70 @@ export default function Header() {
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Mobile Menu */}
+        {showMobileMenu && (
+          <div className="md:hidden border-t border-gray-200">
+            <nav className="px-4 py-3 space-y-1">
+              {/* Shop with dropdown */}
+              <div className="space-y-1">
+                <div className="font-medium text-gray-900 px-3 py-2">Shop</div>
+                <Link 
+                  href="/category/casual" 
+                  className="block px-6 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Casual
+                </Link>
+                <Link 
+                  href="/category/formal" 
+                  className="block px-6 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Formal
+                </Link>
+                <Link 
+                  href="/category/party" 
+                  className="block px-6 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Party
+                </Link>
+                <Link 
+                  href="/category/gym" 
+                  className="block px-6 py-2 text-gray-600 hover:bg-gray-50 rounded-lg transition"
+                  onClick={() => setShowMobileMenu(false)}
+                >
+                  Gym
+                </Link>
+              </div>
+              
+              <Link 
+                href="/on-sale" 
+                className="block px-3 py-2 font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                On Sale
+              </Link>
+              
+              <Link 
+                href="/new-arrivals" 
+                className="block px-3 py-2 font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                New Arrivals
+              </Link>
+              
+              <Link 
+                href="/brands" 
+                className="block px-3 py-2 font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition"
+                onClick={() => setShowMobileMenu(false)}
+              >
+                Brands
+              </Link>
+            </nav>
           </div>
         )}
       </div>

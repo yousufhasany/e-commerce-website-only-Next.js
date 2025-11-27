@@ -5,7 +5,7 @@ A fully functional e-commerce web application built with Next.js 14 App Router, 
 ## 🔗 Links
 
 - **GitHub Repository**: [https://github.com/yousufhasany/e-commerce-website-only-Next.js](https://github.com/yousufhasany/e-commerce-website-only-Next.js)
-- **Live Demo**: [Deploy to Vercel - See deployment section below](#-deployment)
+- **Live Demo**: [https://e-commerce-website-only-next-js-niv.vercel.app](https://e-commerce-website-only-next-js-niv.vercel.app)
 
 ## 🚀 Quick Start
 

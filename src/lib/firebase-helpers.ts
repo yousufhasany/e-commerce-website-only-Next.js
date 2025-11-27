@@ -18,6 +18,7 @@ import {
   getDocs, 
   updateDoc, 
   deleteDoc,
+  setDoc,
   query,
   where,
   orderBy
@@ -165,17 +166,15 @@ import {
 async function saveUserToFirestore(uid: string, email: string, displayName: string) {
   try {
     const userRef = doc(db, 'users', uid)
-    const userSnap = await getDoc(userRef)
+    // Use setDoc with merge to create or update user document
+    await setDoc(userRef, {
+      uid,
+      email,
+      displayName,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    }, { merge: true })
     
-    if (!userSnap.exists()) {
-      // Create new user document
-      await addDoc(collection(db, 'users'), {
-        uid,
-        email,
-        displayName,
-        createdAt: new Date().toISOString()
-      })
-    }
     return { success: true }
   } catch (error) {
     console.error('Error saving user to Firestore:', error)

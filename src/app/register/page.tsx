@@ -26,9 +26,20 @@ export default function RegisterPage() {
       const firebaseUser = await signInWithGoogle()
       
       if (firebaseUser) {
-        toast.success('Signed up with Google!')
-        router.push('/')
-        router.refresh()
+        // Create NextAuth session with user info
+        const result = await signIn('credentials', {
+          email: firebaseUser.email,
+          password: 'google-oauth-user', // Dummy password for OAuth users
+          redirect: false,
+        })
+        
+        if (result?.ok) {
+          toast.success('Signed up with Google!')
+          router.push('/')
+          router.refresh()
+        } else {
+          throw new Error('Failed to create session')
+        }
       }
     } catch (error: any) {
       console.error('Google signup error:', error)
@@ -61,16 +72,20 @@ export default function RegisterPage() {
       const firebaseUser = await signUpWithEmail(email, password, name)
       
       if (firebaseUser) {
-        // Also sign in with NextAuth for session management
-        await signIn('credentials', {
+        // Create NextAuth session for session management
+        const result = await signIn('credentials', {
           email,
           password,
           redirect: false,
         })
         
-        toast.success('Account created successfully!')
-        router.push('/')
-        router.refresh()
+        if (result?.ok) {
+          toast.success('Account created successfully!')
+          router.push('/')
+          router.refresh()
+        } else {
+          throw new Error('Failed to create session')
+        }
       }
     } catch (error: any) {
       console.error('Registration error:', error)

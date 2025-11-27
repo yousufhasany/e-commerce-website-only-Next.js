@@ -157,17 +157,24 @@ import {
   signInWithEmailAndPassword,
   signOut,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithPopup,
+  updateProfile
 } from 'firebase/auth'
 
 // Sign up with email and password
-export async function signUpWithEmail(email: string, password: string) {
+export async function signUpWithEmail(email: string, password: string, displayName?: string) {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-    return { success: true, user: userCredential.user }
-  } catch (error) {
+    
+    // Update user profile with display name if provided
+    if (displayName && userCredential.user) {
+      await updateProfile(userCredential.user, { displayName })
+    }
+    
+    return userCredential.user
+  } catch (error: any) {
     console.error('Error signing up:', error)
-    return { success: false, error }
+    throw new Error(error.message || 'Failed to create account')
   }
 }
 
@@ -175,10 +182,10 @@ export async function signUpWithEmail(email: string, password: string) {
 export async function signInWithEmail(email: string, password: string) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    return { success: true, user: userCredential.user }
-  } catch (error) {
+    return userCredential.user
+  } catch (error: any) {
     console.error('Error signing in:', error)
-    return { success: false, error }
+    throw new Error(error.message || 'Invalid email or password')
   }
 }
 
@@ -186,11 +193,25 @@ export async function signInWithEmail(email: string, password: string) {
 export async function signInWithGoogle() {
   try {
     const provider = new GoogleAuthProvider()
+    // Add prompt to select account every time
+    provider.setCustomParameters({
+      prompt: 'select_account'
+    })
     const result = await signInWithPopup(auth, provider)
-    return { success: true, user: result.user }
-  } catch (error) {
+    return result.user
+  } catch (error: any) {
     console.error('Error signing in with Google:', error)
-    return { success: false, error }
+    
+    // Handle specific error cases
+    if (error.code === 'auth/popup-closed-by-user') {
+      throw new Error('Sign-in popup was closed')
+    } else if (error.code === 'auth/popup-blocked') {
+      throw new Error('Sign-in popup was blocked by browser')
+    } else if (error.code === 'auth/cancelled-popup-request') {
+      throw new Error('Sign-in was cancelled')
+    }
+    
+    throw new Error(error.message || 'Failed to sign in with Google')
   }
 }
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   title: 'SHOP.CO - Find Clothes That Matches Your Style',
   description: 'Browse through our diverse range of meticulously crafted garments, designed to bring out your individuality and cater to your sense of style.',
   keywords: ['fashion', 'clothing', 'ecommerce', 'shopping', 'shop', 'clothes', 'style'],
-  authors: [{ name: 'SHOP.CO' }],
+  authors: [{ name: 'SHOP.SAKU' }],
   icons: {
     icon: '/icon',
     apple: '/apple-icon',

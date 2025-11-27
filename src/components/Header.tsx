@@ -169,7 +169,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="text-2xl font-bold tracking-tight">
-            SHOP.CO
+            SHOP.SAKU
           </Link>
 
           {/* Navigation */}

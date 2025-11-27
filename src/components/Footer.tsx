@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <h2 className="text-2xl font-bold mb-4">SHOP.CO</h2>
+            <h2 className="text-2xl font-bold mb-4">SHOP.SAKU</h2>
             <p className="text-gray-600 text-sm mb-4">
               We have clothes that suit your style and which you're proud to wear. From women to men.
             </p>
@@ -76,7 +76,7 @@ export default function Footer() {
         {/* Bottom */}
         <div className="border-t border-gray-300 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-600 text-sm mb-4 md:mb-0">
-            Shop.co © 2000-2023, All Rights Reserved
+            Shop.Saku © 2000-2023, All Rights Reserved
           </p>
           <div className="flex space-x-2">
             <div className="w-12 h-8 bg-white rounded flex items-center justify-center border border-gray-200">

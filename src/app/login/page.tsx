@@ -34,8 +34,10 @@ export default function LoginPage() {
         
         if (result?.ok) {
           toast.success('Logged in with Google!')
-          router.push('/')
-          router.refresh()
+          // Force full page reload to ensure session is loaded
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 500)
         } else {
           throw new Error('Failed to create session')
         }
@@ -69,8 +71,10 @@ export default function LoginPage() {
         
         if (result?.ok) {
           toast.success('Logged in successfully!')
-          router.push('/')
-          router.refresh()
+          // Force full page reload to ensure session is loaded
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 500)
         } else {
           throw new Error('Failed to create session')
         }

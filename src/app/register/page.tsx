@@ -39,11 +39,12 @@ export default function RegisterPage() {
         
         if (result?.ok) {
           toast.success('Account created! Logging you in...', { id: 'google-signup' })
+          // Force full page reload to ensure session is loaded
           setTimeout(() => {
-            router.push('/')
-            router.refresh()
-          }, 500)
+            window.location.href = '/'
+          }, 800)
         } else {
+          toast.dismiss('google-signup')
           throw new Error('Failed to create session')
         }
       }
@@ -92,11 +93,12 @@ export default function RegisterPage() {
         
         if (result?.ok) {
           toast.success('Account created successfully! Logging you in...', { id: 'signup' })
+          // Force full page reload to ensure session is loaded
           setTimeout(() => {
-            router.push('/')
-            router.refresh()
-          }, 500)
+            window.location.href = '/'
+          }, 800)
         } else {
+          toast.dismiss('signup')
           throw new Error('Failed to create session')
         }
       }

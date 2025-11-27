@@ -17,13 +17,26 @@ export default function ManageProductsTable() {
   const loadProducts = async () => {
     setLoading(true)
     try {
-      const result = await getAllProducts()
+      const result = await Promise.race([
+        getAllProducts(),
+        new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('Request timeout')), 10000)
+        )
+      ]) as any
+      
       if (result.success && result.products) {
         setProducts(result.products)
+      } else {
+        setProducts([])
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error loading products:', error)
-      toast.error('Failed to load products')
+      if (error.message === 'Request timeout') {
+        toast.error('Loading products is taking too long. Please refresh the page.')
+      } else {
+        toast.error('Failed to load products. You can still add new products.')
+      }
+      setProducts([])
     } finally {
       setLoading(false)
     }

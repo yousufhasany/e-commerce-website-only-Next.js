@@ -22,6 +22,9 @@ export default function RegisterPage() {
     setError('')
     
     try {
+      // Show loading message
+      toast.loading('Signing up with Google...', { id: 'google-signup' })
+      
       // Sign up with Firebase Google
       const firebaseUser = await signInWithGoogle()
       
@@ -35,15 +38,18 @@ export default function RegisterPage() {
         })
         
         if (result?.ok) {
-          toast.success('Signed up with Google!')
-          router.push('/')
-          router.refresh()
+          toast.success('Account created! Logging you in...', { id: 'google-signup' })
+          setTimeout(() => {
+            router.push('/')
+            router.refresh()
+          }, 500)
         } else {
           throw new Error('Failed to create session')
         }
       }
     } catch (error: any) {
       console.error('Google signup error:', error)
+      toast.dismiss('google-signup')
       setError(error.message || 'Google sign-up failed')
       toast.error(error.message || 'Google sign-up failed')
     } finally {
@@ -69,6 +75,9 @@ export default function RegisterPage() {
     }
 
     try {
+      // Show loading message
+      toast.loading('Creating your account...', { id: 'signup' })
+      
       // Register with Firebase
       const firebaseUser = await signUpWithEmail(email, password, name)
       
@@ -82,17 +91,35 @@ export default function RegisterPage() {
         })
         
         if (result?.ok) {
-          toast.success('Account created successfully!')
-          router.push('/')
-          router.refresh()
+          toast.success('Account created successfully! Logging you in...', { id: 'signup' })
+          setTimeout(() => {
+            router.push('/')
+            router.refresh()
+          }, 500)
         } else {
           throw new Error('Failed to create session')
         }
       }
     } catch (error: any) {
       console.error('Registration error:', error)
-      setError(error.message || 'Registration failed. Please try again.')
-      toast.error(error.message || 'Registration failed')
+      toast.dismiss('signup')
+      
+      // Better error messages
+      let errorMessage = 'Registration failed. Please try again.'
+      if (error.message.includes('operation-not-allowed')) {
+        errorMessage = 'Email/Password sign-up is not enabled. Please use Google Sign-in or contact support.'
+      } else if (error.message.includes('email-already-in-use')) {
+        errorMessage = 'This email is already registered. Please login instead.'
+      } else if (error.message.includes('weak-password')) {
+        errorMessage = 'Password is too weak. Please use at least 6 characters.'
+      } else if (error.message.includes('invalid-email')) {
+        errorMessage = 'Invalid email address.'
+      } else if (error.message) {
+        errorMessage = error.message
+      }
+      
+      setError(errorMessage)
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }

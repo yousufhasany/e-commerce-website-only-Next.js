@@ -191,12 +191,12 @@ export async function signUpWithEmail(email: string, password: string, displayNa
     if (displayName && userCredential.user) {
       await updateProfile(userCredential.user, { displayName })
       
-      // Save user to Firestore
-      await saveUserToFirestore(
+      // Save user to Firestore in background (don't wait for it)
+      saveUserToFirestore(
         userCredential.user.uid,
         email,
         displayName
-      )
+      ).catch(err => console.error('Background save failed:', err))
     }
     
     return userCredential.user
@@ -227,13 +227,13 @@ export async function signInWithGoogle() {
     })
     const result = await signInWithPopup(auth, provider)
     
-    // Save user to Firestore (creates if doesn't exist)
+    // Save user to Firestore in background (don't wait for it)
     if (result.user) {
-      await saveUserToFirestore(
+      saveUserToFirestore(
         result.user.uid,
         result.user.email || '',
         result.user.displayName || result.user.email?.split('@')[0] || 'User'
-      )
+      ).catch(err => console.error('Background save failed:', err))
     }
     
     return result.user

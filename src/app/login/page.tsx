@@ -83,18 +83,31 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen relative flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      {/* Background Image */}
+      <div 
+        className="absolute inset-0 z-0"
+        style={{
+          backgroundImage: 'url(https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=1080&fit=crop)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm"></div>
+      </div>
+
+      {/* Content */}
+      <div className="max-w-md w-full space-y-8 relative z-10">
         <div>
-          <h2 className="mt-6 text-center text-4xl font-bold text-gray-900">
+          <h2 className="mt-6 text-center text-4xl font-bold text-white drop-shadow-lg">
             Welcome Back
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          <p className="mt-2 text-center text-sm text-white/90">
             Sign in to your account to continue
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+        <div className="bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl p-8 space-y-6">
           {/* Google Login */}
           <button
             onClick={handleGoogleLogin}

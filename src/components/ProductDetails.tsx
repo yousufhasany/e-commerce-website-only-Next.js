@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { Star, Minus, Plus, Check } from 'lucide-react'
 import ReviewsSection from './ReviewsSection'
@@ -235,12 +235,66 @@ interface ProductDetailsProps {
 }
 
 export default function ProductDetails({ productId }: ProductDetailsProps) {
-  const product = products.find(p => p.id === productId) || products[0]
+  const [allProducts, setAllProducts] = useState(products)
+  const [product, setProduct] = useState(products[0])
   const [selectedImage, setSelectedImage] = useState(0)
   const [selectedColor, setSelectedColor] = useState(product.colors[0])
   const [selectedSize, setSelectedSize] = useState('Large')
   const [quantity, setQuantity] = useState(1)
   const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'faqs'>('reviews')
+
+  // Load products from localStorage and merge with static products
+  useEffect(() => {
+    try {
+      const storedProducts = localStorage.getItem('products')
+      if (storedProducts) {
+        const localProducts = JSON.parse(storedProducts)
+        // Convert localStorage products to match the expected format
+        const formattedLocalProducts = localProducts.map((p: any) => ({
+          id: String(p.id),
+          name: p.name,
+          price: p.price,
+          rating: p.rating || 4.5,
+          reviewCount: p.reviews || 100,
+          description: p.description || p.shortDescription,
+          colors: ['olive', 'green', 'navy'],
+          sizes: ['Small', 'Medium', 'Large', 'X-Large'],
+          images: [
+            p.image,
+            'https://images.unsplash.com/photo-1503341504253-dff4815485f1?w=600&h=700&fit=crop',
+            'https://images.unsplash.com/photo-1622445275463-afa2ab738c34?w=600&h=700&fit=crop',
+          ],
+          breadcrumb: ['Home', 'Shop', p.category || 'Products'],
+        }))
+        
+        // Merge with static products
+        const merged = [...formattedLocalProducts, ...products]
+        setAllProducts(merged)
+        
+        // Find the correct product
+        const foundProduct = merged.find(p => p.id === productId)
+        if (foundProduct) {
+          setProduct(foundProduct)
+          setSelectedColor(foundProduct.colors[0])
+        }
+      } else {
+        // Use static products only
+        const foundProduct = products.find(p => p.id === productId)
+        if (foundProduct) {
+          setProduct(foundProduct)
+          setSelectedColor(foundProduct.colors[0])
+        }
+      }
+    } catch (error) {
+      console.error('Error loading products:', error)
+      // Fallback to static products
+      const foundProduct = products.find(p => p.id === productId)
+      if (foundProduct) {
+        setProduct(foundProduct)
+        setSelectedColor(foundProduct.colors[0])
+      }
+    }
+  }, [productId])
 
   const colorMap: { [key: string]: string } = {
     'olive': '#6b7c3a',

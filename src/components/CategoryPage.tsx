@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { SlidersHorizontal, ChevronRight, ChevronDown, ChevronUp } from 'lucide-react'
 import ProductCard from './ProductCard'
 
 // Mock products data
-const allProducts = [
+const staticProducts = [
   { id: 1, name: 'Gradient Graphic T-shirt', image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=400&fit=crop', rating: 3.5, price: 145, category: 'casual', style: 'casual' },
   { id: 2, name: 'Polo with Tipping Details', image: 'https://images.unsplash.com/photo-1586790170083-2f9ceadc732d?w=300&h=400&fit=crop', rating: 4.5, price: 180, category: 'casual', style: 'casual' },
   { id: 3, name: 'Black Striped T-shirt', image: 'https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=300&h=400&fit=crop', rating: 5.0, price: 120, originalPrice: 160, discount: 30, category: 'casual', style: 'casual' },
@@ -45,6 +45,7 @@ interface CategoryPageProps {
 }
 
 export default function CategoryPage({ category }: CategoryPageProps) {
+  const [allProducts, setAllProducts] = useState(staticProducts)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedColors, setSelectedColors] = useState<string[]>([])
   const [selectedSizes, setSelectedSizes] = useState<string[]>([])
@@ -52,6 +53,21 @@ export default function CategoryPage({ category }: CategoryPageProps) {
   const [priceRange, setPriceRange] = useState([0, 500])
   const [sortBy, setSortBy] = useState('Most Popular')
   const [showFilters, setShowFilters] = useState(true)
+
+  // Load products from localStorage on mount
+  useEffect(() => {
+    try {
+      const storedProducts = localStorage.getItem('products')
+      if (storedProducts) {
+        const localProducts = JSON.parse(storedProducts)
+        // Merge localStorage products with static products
+        const merged = [...staticProducts, ...localProducts]
+        setAllProducts(merged)
+      }
+    } catch (error) {
+      console.error('Error loading products from localStorage:', error)
+    }
+  }, [])
 
   // Filter sections state
   const [expandedSections, setExpandedSections] = useState({
@@ -110,27 +126,44 @@ export default function CategoryPage({ category }: CategoryPageProps) {
     )
   }
 
+  const applyFilters = () => {
+    // Filters are applied automatically, this button just provides feedback
+    console.log('Filters applied:', { selectedColors, selectedSizes, selectedStyles, priceRange })
+  }
+
+  const clearFilters = () => {
+    setSelectedColors([])
+    setSelectedSizes([])
+    setSelectedStyles([category])
+    setPriceRange([0, 500])
+  }
+
   const filteredProducts = allProducts.filter(product => {
     // Search filter
     if (searchQuery.trim() && !product.name.toLowerCase().includes(searchQuery.toLowerCase())) {
       return false
     }
     
+    // Price filter
+    if (product.price < priceRange[0] || product.price > priceRange[1]) {
+      return false
+    }
+    
     // For specific categories, show appropriate products
     if (category === 'on-sale') {
       // Show products with discounts
-      return product.discount && product.discount > 0
-    }
-    if (category === 'new-arrivals') {
+      if (!product.discount || product.discount <= 0) return false
+    } else if (category === 'new-arrivals') {
       // Show first 6 products as new arrivals
-      return product.id <= 6
-    }
-    if (category === 'brands') {
+      if (product.id > 6) return false
+    } else if (category === 'brands') {
       // Show all products for brands page
-      return true
+      // No additional filtering
+    } else {
+      // For style categories (casual, formal, party, gym)
+      if (selectedStyles.length > 0 && !selectedStyles.includes(product.style)) return false
     }
-    // For style categories (casual, formal, party, gym)
-    if (selectedStyles.length > 0 && !selectedStyles.includes(product.style)) return false
+    
     return true
   })
 
@@ -324,9 +357,22 @@ export default function CategoryPage({ category }: CategoryPageProps) {
               </div>
 
               {/* Apply Filter Button */}
-              <button className="w-full bg-black text-white py-3 rounded-full hover:bg-gray-800 transition font-medium">
-                Apply Filter
-              </button>
+              <div className="space-y-2">
+                <button 
+                  onClick={applyFilters}
+                  className="w-full bg-black text-white py-3 rounded-full hover:bg-gray-800 transition font-medium"
+                >
+                  Apply Filter
+                </button>
+                {(selectedColors.length > 0 || selectedSizes.length > 0 || selectedStyles.length > 1 || priceRange[1] < 500) && (
+                  <button 
+                    onClick={clearFilters}
+                    className="w-full bg-white text-black border border-gray-300 py-3 rounded-full hover:bg-gray-50 transition font-medium"
+                  >
+                    Clear Filters
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 
@@ -334,7 +380,16 @@ export default function CategoryPage({ category }: CategoryPageProps) {
           <div className="flex-1">
             {/* Header */}
             <div className="mb-6">
-              <h1 className="text-3xl font-bold mb-4">{categoryTitles[category] || 'Casual'}</h1>
+              <div className="flex items-center justify-between mb-4">
+                <h1 className="text-3xl font-bold">{categoryTitles[category] || 'Casual'}</h1>
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className="md:hidden flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition"
+                >
+                  <SlidersHorizontal className="w-5 h-5" />
+                  <span>Filters</span>
+                </button>
+              </div>
               
               {/* Search Bar */}
               <div className="mb-4">
@@ -347,9 +402,40 @@ export default function CategoryPage({ category }: CategoryPageProps) {
                 />
               </div>
 
+              {/* Active Filters Display */}
+              {(selectedColors.length > 0 || selectedSizes.length > 0 || selectedStyles.length > 1 || priceRange[1] < 500) && (
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <span className="text-sm font-medium text-gray-700">Active Filters:</span>
+                  {selectedColors.map(color => (
+                    <span key={color} className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-2">
+                      {color}
+                      <button onClick={() => toggleColor(color)} className="text-gray-500 hover:text-black">×</button>
+                    </span>
+                  ))}
+                  {selectedSizes.map(size => (
+                    <span key={size} className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-2">
+                      {size}
+                      <button onClick={() => toggleSize(size)} className="text-gray-500 hover:text-black">×</button>
+                    </span>
+                  ))}
+                  {selectedStyles.filter(s => s !== category).map(style => (
+                    <span key={style} className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-2">
+                      {style}
+                      <button onClick={() => toggleStyle(style)} className="text-gray-500 hover:text-black">×</button>
+                    </span>
+                  ))}
+                  {priceRange[1] < 500 && (
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-sm flex items-center gap-2">
+                      ${priceRange[0]} - ${priceRange[1]}
+                      <button onClick={() => setPriceRange([0, 500])} className="text-gray-500 hover:text-black">×</button>
+                    </span>
+                  )}
+                </div>
+              )}
+
               <div className="flex items-center justify-between">
                 <span className="text-gray-500">
-                  Showing 1-{filteredProducts.length} of {filteredProducts.length} Products
+                  Showing {filteredProducts.length} of {allProducts.length} Products
                 </span>
                 <div className="flex items-center gap-2">
                   <span className="text-gray-600">Sort by:</span>
@@ -368,11 +454,23 @@ export default function CategoryPage({ category }: CategoryPageProps) {
             </div>
 
             {/* Products */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} {...product} />
-              ))}
-            </div>
+            {filteredProducts.length > 0 ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map((product) => (
+                  <ProductCard key={product.id} {...product} />
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <p className="text-gray-500 text-lg mb-4">No products found matching your filters.</p>
+                <button 
+                  onClick={clearFilters}
+                  className="px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition"
+                >
+                  Clear All Filters
+                </button>
+              </div>
+            )}
 
             {/* Pagination */}
             <div className="mt-12 flex justify-center">

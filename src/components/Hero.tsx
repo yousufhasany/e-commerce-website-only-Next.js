@@ -3,7 +3,14 @@ import { Sparkles } from 'lucide-react'
 
 export default function Hero() {
   return (
-    <section className="bg-gray-50">
+    <section className="bg-gray-50 relative">
+      {/* Static SHOP.SAKU Box at top */}
+      <div className="flex justify-center pt-8 pb-4">
+        <div className="bg-black text-white px-8 py-4 text-3xl font-bold border-4 border-white shadow-2xl">
+          SHOP.SAKU
+        </div>
+      </div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}

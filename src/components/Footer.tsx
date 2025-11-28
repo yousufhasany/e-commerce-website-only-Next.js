@@ -1,9 +1,32 @@
+'use client'
+
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Twitter, Facebook, Instagram, Github } from 'lucide-react'
 
 export default function Footer() {
+  const [showLogoInBox, setShowLogoInBox] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const windowHeight = window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      const scrollTop = window.scrollY
+      const maxScroll = documentHeight - windowHeight
+      const progress = scrollTop / maxScroll
+      
+      // Show logo in footer box when scroll reaches 95% or more
+      setShowLogoInBox(progress >= 0.95)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    handleScroll() // Initial call
+    
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
-    <footer className="bg-gray-100 mt-20">
+    <footer className="bg-gray-100 mt-20 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Brand */}
@@ -95,6 +118,18 @@ export default function Footer() {
               <span className="text-xs font-semibold">G</span>
             </div>
           </div>
+        </div>
+      </div>
+      
+      {/* Empty SHOP.SAKU Box at bottom - logo lands here when scrolling */}
+      <div className="flex justify-center pb-8 pt-4">
+        <div className="bg-black text-white px-8 py-4 text-3xl font-bold border-4 border-white shadow-2xl min-w-[280px] min-h-[72px] flex items-center justify-center">
+          <span 
+            className="transition-opacity duration-300"
+            style={{ opacity: showLogoInBox ? 1 : 0 }}
+          >
+            SHOP.SAKU
+          </span>
         </div>
       </div>
     </footer>

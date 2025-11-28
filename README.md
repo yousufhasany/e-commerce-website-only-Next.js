@@ -204,22 +204,6 @@ SHOP.SAKU is a modern e-commerce web application built with **Next.js 14 App Rou
 - npm or yarn
 - Firebase project with Authentication enabled
 
-### Environment Variables
-Create `.env.local`:
-
-```env
-# NextAuth
-AUTH_SECRET=your-secret
-NEXTAUTH_URL=http://localhost:3000
-
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
-NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
-```
 
 ### Installation
 
@@ -234,69 +218,6 @@ npm install
 # Run development server
 npm run dev
 
-# Open http://localhost:3000
-```
-
-### Build for Production
-
-```bash
-npm run build
-npm start
-```
-
-### Deploy to Vercel
-
-```bash
-# Install Vercel CLI
-npm install -g vercel
-
-# Deploy
-vercel
-```
-
-Or push to GitHub and import in Vercel dashboard.
-
-## 📁 Project Structure
-
-```
-e-commerce-website-only-Next.js/
-├── src/
-│   ├── app/
-│   │   ├── add-product/page.tsx          # Protected
-│   │   ├── manage-products/page.tsx      # Protected
-│   │   ├── login/page.tsx
-│   │   ├── register/page.tsx
-│   │   ├── cart/page.tsx
-│   │   ├── products/[id]/page.tsx
-│   │   ├── category/[category]/page.tsx
-│   │   ├── new-arrivals/page.tsx
-│   │   ├── on-sale/page.tsx
-│   │   ├── brands/page.tsx
-│   │   ├── search/page.tsx
-│   │   ├── layout.tsx
-│   │   └── page.tsx                      # Landing Page
-│   ├── components/
-│   │   ├── Header.tsx
-│   │   ├── Footer.tsx
-│   │   ├── Hero.tsx
-│   │   ├── NewArrivals.tsx
-│   │   ├── TopSelling.tsx
-│   │   ├── BrowseByStyle.tsx
-│   │   ├── Testimonials.tsx
-│   │   ├── Newsletter.tsx
-│   │   ├── ProductCard.tsx
-│   │   ├── ProductDetails.tsx
-│   │   ├── Cart.tsx
-│   │   ├── AddProductForm.tsx
-│   │   ├── ManageProductsTable.tsx
-│   │   └── Providers.tsx
-│   ├── lib/
-│   │   └── firebase-helpers.ts
-│   └── auth.ts
-├── public/
-│   └── manifest.json
-├── .env.local
-└── package.json
 ```
 
 ## 🔑 Authentication Flow
